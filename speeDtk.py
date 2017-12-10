@@ -9,7 +9,7 @@ Tkinter implementation
 Created on Apr 22, 2017
 
 @author: doktorbrown
-'''
+''' 
 
 import serial, csv,os
 import Tkinter as tk
@@ -25,7 +25,8 @@ import Tkinter as tk
 
 ser = serial.Serial(
 #     port='/dev/cu.usbmodem14241',
-    port='/dev/cu.usbmodem14211', 
+#     port='/dev/cu.usbmodem14211',
+    port='/dev/cu.usbmodem14231', 
     baudrate=115200,
     bytesize=serial.EIGHTBITS,
     parity=serial.PARITY_NONE,
@@ -165,7 +166,7 @@ def update():
     root.after(100, update)  
  
 root = tk.Tk()
-root.title("bunco dribble")
+root.title("Scanner Logging Utility")
 # root.toplevel(bg='green')  
 
 daY = tk.Label(text='0',padx=25)    
