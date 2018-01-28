@@ -13,6 +13,8 @@ Created on Apr 22, 2017
 
 import serial, csv,os
 import Tkinter as tk
+from datetime import datetime
+# from datetime import time
 # from Tkinter import *
 # from Tkinter import Ttk
 
@@ -22,11 +24,35 @@ import Tkinter as tk
 # as of 5.29.17 now logs to /Desktop at about 1.1K/min and out to a Tkinter window.  This has also been turned into standalone app with py2app
 
 #connect to UnidenBCD436HP over USB when scanner is set to serial mode
+# get current system date and time for sync comparison
+def timeGetter():
+#     today=str(datetime.today())
+    # d=str(date.time()) 
+    t=str(datetime.now())  
+
+    # print d
+    x= t.split()  
+#     print today 
+    dateNow= x[0]
+    y= x[1] 
+    z=y.split(".") 
+    timeNow= z[0] 
+    
+    return (dateNow,timeNow) 
+
+
+portList=("1","2","3","4")
+for p in portList:
+    port ='dev/'+(p)
+    print port 
+
 
 ser = serial.Serial(
 #     port='/dev/cu.usbmodem14241',
 #     port='/dev/cu.usbmodem14211',
-    port='/dev/cu.usbmodem14231', 
+#     port='/dev/serial/by-id/usb-UNIDEN_AMERICA_CORP._BCD436HP_Serial_Port-if00', #on raspberry pi   
+#     port='/dev/cu.usbmodem14231', 
+    port='/dev/cu.usbmodem1411',
     baudrate=115200,
     bytesize=serial.EIGHTBITS,
     parity=serial.PARITY_NONE,
@@ -60,13 +86,18 @@ def newPath(): #find userName to allow saving on OSX
 
 def uniD(ser):
     bcdCommand=('GLG','DTM','STS','GSI','PWR','DTM')
+    print timeGetter()
+    
+    logNameHead= timeGetter() 
+#     print logNameHead[0]
  
-    csvLogOutput = newPath() + "newLog.csv" 
+    csvLogOutput = newPath() + logNameHead[0]+"_scannerLog.csv" 
 
     
     statusGLG = checkSerial(bcdCommand[0],ser)
     statusDTM1 = checkSerial(bcdCommand[1],ser)
     statusGSI = checkSerial(bcdCommand[3],ser)
+    print statusDTM1
 #     beans= statusGLG,statusDTM1
 #     print beans
 
@@ -146,6 +177,10 @@ def uniD(ser):
     csvLogger(dayTimer,shorTimer,Frequency,Type,System,Department,TalkGroup,RSSI,TGID,UID,csvLogOutput)
     beans=(dayTimer,shorTimer,Frequency,Type,System,Department,TalkGroup,RSSI,TGID,UID) 
 #     return beans,dayTimer,shorTimer,Frequency,Type,System,Department,TalkGroup,RSSI,TGID,UID
+#     print dateNow
+#     print timeNow
+#     print timeGetter() 
+
     return beans
 
 
@@ -205,5 +240,5 @@ uiD.place(x=25, y=250)
  
 root.after(100, update)
 root.geometry("800x300+0+0") 
-root.mainloop() 
+root.mainloop()  
 
